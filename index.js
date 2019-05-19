@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-app.listen(3000, ()=> {})
+app.listen(process.env.PORT || 3000, ()=> {})
 const aws = require('aws-sdk')
 aws.config.update({
   accessKeyId: process.env.awsAccessKeyId,
