@@ -1,22 +1,18 @@
-const express = require('express');
-const url = require('url')
-const app = express();
-app.use(bodyParser.json({
-  limit: bytes.parse('50mb'),
-  extended: true
-}));
-const aws = require('aws-sdk');
+const express = require('express')
+const app = express()
+app.listen(3000, ()=> {})
+const aws = require('aws-sdk')
 aws.config.update({
   accessKeyId: process.env.awsAccessKeyId,
   secretAccessKey: process.env.awsSecretAccessKey,
   region: 'ap-northeast-1'
 });
-const s3 = new aws.S3();
+const s3 = new aws.S3()
 
 //クロスドメイン許可
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next();
 });
 
@@ -35,7 +31,7 @@ async function getFileName(name) {
       } else {
         const fileList = data.Contents
         fileList.shift()
-        resolve(fileList[Math.floor(Math.random() * fileList.length )].Key)
+        resolve('https://s3-ap-northeast-1.amazonaws.com/mrble-portfolio/' + fileList[Math.floor(Math.random() * fileList.length )].Key)
       }
     })
   })
@@ -57,8 +53,3 @@ app.get('/getFileName', (req, res) => {
       break
   }
 })
-
-module.exports = {
-  path: '/api',
-  handler: app,
-}
