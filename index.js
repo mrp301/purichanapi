@@ -70,3 +70,47 @@ app.get('/viewFile', (req, res) => {
       break
   }
 })
+
+async function getFileList(name) {
+  return new Promise((resolve) => {
+
+    const params2 = {
+      Bucket: 'mrble-portfolio',
+      Prefix: 'purichan/' + name + '/'
+    }
+
+    s3.listObjectsV2(params2, (err, data) => {
+      if (err) {
+        console.log("Error", err)
+        resolve('Error')
+      } else {
+        const fileList = data.Contents
+        fileList.shift()
+        resolve(fileList)
+      }
+    })
+  })
+}
+
+app.get('/fileList', (req, res) => {
+  const name = req.query.name
+  let filePath
+  switch(name) {
+    case 'mirai':
+    case 'emo':
+    case 'rinka':
+      getFileList(name).then((result) => {
+        let resData = ''
+        result.forEach((data) => {
+          resData += '<li style="list-style: none;"><p>▼'+ data.Key +'</p><img width="300" src="https://s3-ap-northeast-1.amazonaws.com/mrble-portfolio/' +data.Key+ '"></li>'
+        })
+        res.send(
+          "<ul>"+ resData +"</ul>"
+        )
+      })
+    break
+    default:
+      res.send('存在しないリクエスト')
+      break
+  }
+})
