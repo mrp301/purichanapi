@@ -53,3 +53,20 @@ app.get('/getFileName', (req, res) => {
       break
   }
 })
+
+app.get('/viewFile', (req, res) => {
+  const name = req.query.name
+  let filePath
+  switch(name) {
+    case 'mirai':
+    case 'emo':
+    case 'rinka':
+      getFileName(name).then((result) => {
+        res.send("<p>" +result+ "</p><img src='" +result+ "'>")
+      })
+    break
+    default:
+      res.send('存在しないリクエスト')
+      break
+  }
+})
